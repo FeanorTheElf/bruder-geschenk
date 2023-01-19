@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  <body style="margin: 0;">
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
+        <div id="player0"></div>
+        <div id="player1"></div>
+        <div id="player2"></div>
+        <div id="player3"></div>
+    </div>
+    <div style="background-color: white; z-index: 1000; position: absolute; width: 100vw; height: 100vh">
+        <div class="container text-center p-5">
+            <div class="row p-3">
+                Die Bilder hat leider der Seehund gestohlen, aber ein paar Hinweise auf dein Geschenk kannst du hier dennoch finden.
+                Jedes der folgenden 20-sekündigen Musikstücke hat einen starken Zusammenhang zu deinem Geschenk.
+                Was ist es?
+            </div>
+            <div class="row p-3">
+                <div class="col"></div>
+                <div class="col col-auto">
+                    <button id="button0" class="btn btn-primary disabled">Play</button>
+                </div>
+                <div class="col col-auto">
+                    <button id="button1" class="btn btn-primary disabled">Play</button>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row p-3">
+                <div class="col"></div>
+                <div class="col col-auto">
+                    <button id="button2" class="btn btn-primary disabled">Play</button>
+                </div>
+                <div class="col col-auto">
+                    <button id="button3" class="btn btn-primary disabled">Play</button>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row p-3">
+                Und wenn du dich fragst, wo du dein Geschenk findest, die Antwort ist in folgenden zwei Bildern versteckt:
+            </div>
+            <div class="row p-3">
+                <img src="./steam.png" style="width: 512px;"></img>
+                <img src="./yoda.png" style="width: 512px;"></img>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        const videos = [
+            "HaTn3oRPtzg",
+            "TZE9gVF1QbA",
+            "WuK59jQ5bwU",
+            "168eM_5IKf8"
+        ]
+
+        function onYouTubeIframeAPIReady() {
+            let players = [];
+            for(let i = 0; i < 4; i += 1) {
+
+                players.push(new YT.Player('player' + i, {
+                    height: '390',
+                    width: '640',
+                    videoId: videos[i],
+                    playerVars: {
+                        'playsinline': 1
+                    },
+                    events: {
+                        'onStateChange': function(event) {
+                            if (event.data == YT.PlayerState.PLAYING) {
+                                setTimeout(function() {
+                                    players[i].stopVideo();
+                                    for(let j = 0; j < 4; j += 1) {
+                                        document.getElementById("button" + j).classList.remove("disabled");
+                                    }
+                                }, 20000);
+                            }
+                        },
+                        'onReady': function() {
+                            document.getElementById("button" + i).classList.remove("disabled");
+                            document.getElementById("button" + i).onclick = function(e) {
+                                for(let j = 0; j < 4; j += 1) {
+                                    document.getElementById("button" + j).classList.add("disabled");
+                                }
+                                players[i].playVideo();
+                            }
+                        }
+                    }
+                }));
+            }
+        }
+    </script>
+  </body>
+</html>
